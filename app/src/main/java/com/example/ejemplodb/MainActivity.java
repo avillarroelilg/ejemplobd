@@ -1,13 +1,25 @@
 package com.example.ejemplodb;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.SQLException;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,15 +32,15 @@ import java.sql.Statement;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
     TextView cajaHex;
 
     private Statement st;
     private Connection con;
     private ResultSet rs;
 
-    private String ip_Servidor = "192.188.10.11", Puerto = "1433", Usuario = "sa", Password = "adm123456";
+    private String ip_Servidor = "192.188.10.114", Puerto = "3306", Usuario = "root", Password = "";
     private String baseDatos = "usuarios1";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +48,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         cajaHex = findViewById(R.id.txtHex);
+        //me gusta mas esta manera de controlar que se clica
+        findViewById(R.id.btnConnect).setOnClickListener(this::onClick);
+        findViewById(R.id.btnHex).setOnClickListener(this::onClick);
 
-        Button connect = findViewById(R.id.btnConnect);
-        Button gen_hex = findViewById(R.id.btnHex);
-        gen_hex.setOnClickListener(this);
-        connect.setOnClickListener(this);
+        findViewById(R.id.btnStart).setOnClickListener(this::onClick);
+        findViewById(R.id.btnStop).setOnClickListener(this::onClick);
+
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ip_Servidor = sharedPreferences.getString("url_db", null);
+        baseDatos = sharedPreferences.getString("name_db", null);
+        Usuario = sharedPreferences.getString("user_name", null);
+        Password = sharedPreferences.getString("user_pass", null);
+      //** -- OJOestos logs se tienen que borrar OJO -- **
+      /*  Log.i("datos",ip_Servidor);
+        Log.i("datos",baseDatos);
+        Log.i("datos",Usuario);
+        Log.i("datos",Password);*/
     }
 
     @Override
@@ -51,13 +92,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Conectar conectar = new Conectar();
                 conectar.execute();
                 break;
+
             case R.id.btnHex:
                 crearHexadecimal();
                 break;
+
+            case R.id.btnStart:
+                startService(new Intent(MainActivity.this, ejemplobatery.class));
+                break;
+
+            case R.id.btnStop:
+                //stopService(new Intent(MainActivity.this, MyService.class));
+                startActivity(new Intent(this, Preferences.class));
+                break;
+
             default:Log.i("click","id no registrado en onclick") ;
         }
     }
+// ############################ menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pref, menu);
+        return true; /** true -> el menú ya está visible */
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.conf) {
+
+            startActivity(new Intent(this, Preferences.class));
+            //return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+// ############################ conn db y crear hexadecimal
     private class Conectar extends AsyncTask<Void, Integer, Boolean> {
         Connection conn;
 
@@ -68,13 +138,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 String driver = "com.mysql.cj.jdbc.Driver";
                 //+ ip_Servidor + ":" + Puerto+ "/"
-                String urlMySQL = "jdbc:mysql://10.0.2.2/ejemplos/" ;
+                String url = "jdbc:mysql://"+ ip_Servidor +"/";
+                String urlMySQL =  url+baseDatos+":" + Puerto+ "/" ;
                 Class.forName(driver).newInstance();
 
-                conn = DriverManager.getConnection(urlMySQL, Usuario,"");
+                conn = DriverManager.getConnection(urlMySQL, Usuario,Password);
 
                st = conn.createStatement();
-               st.executeQuery("insert into ejemplos.divice values('pruebas','pruebas@jaja.sd');");
+               st.executeQuery("insert into pruebas values('008','pruebas','pruebas@jaja.sd');");
 
                 if (conn == null) {
                     return false;
@@ -101,9 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
     private void crearHexadecimal() {
-
         Random rand = new Random();
         int myRandomNumber = rand.nextInt(0xfff) + 0xfff; // Generates a random number between 0x10 and 0x20
         //System.out.printf("%x\n",myRandomNumber); // Prints it in hex, such as "0x14" or....
