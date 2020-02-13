@@ -2,4 +2,9 @@
     <string name="app_name">ejemplodb</string>
     <string name="OK">bateria baja</string>
     <string name="NOK">BATERIA MUY BAJA</string>
+
+    <string name="url">url_db</string>
+    <string name="name">name_db</string>
+    <string name="user">user_name</string>
+    <string name="pass">user_pass</string>
 </resources>
