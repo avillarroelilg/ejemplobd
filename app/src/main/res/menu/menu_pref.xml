@@ -5,4 +5,10 @@
     <item android:title="configuracion"
         android:id="@+id/conf"
         android:icon="@android:drawable/btn_radio"/>
+    <item android:title="Pref Dinamicas"
+        android:id="@+id/dinamicas"
+        android:icon="@android:drawable/btn_radio"/>
+    <item android:title="Pref Fragments"
+        android:id="@+id/ejfragmentpref"
+        android:icon="@android:drawable/btn_radio"/>
 </menu>

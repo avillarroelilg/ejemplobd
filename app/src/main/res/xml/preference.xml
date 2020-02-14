@@ -4,7 +4,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!--https://developer.android.com/guide/topics/ui/settings -->
     <PreferenceCategory
-        android:title="Configuración de usuario y database">
+        android:title="Configuración de usuario y database"
+        android:key="preference1">
+
 
         <EditTextPreference
             android:defaultValue="192.168.10.114"
@@ -32,12 +34,6 @@
             android:singleLine="true"
             android:title="Contraseña de usuario" />
 
-        <ListPreference
 
-            android:defaultValue='1'
-            android:entries="@array/updateInterval"
-            android:entryValues="@array/updateInterval"
-            android:key="list_preference"
-            android:title="List preference" />
     </PreferenceCategory>
 </PreferenceScreen>

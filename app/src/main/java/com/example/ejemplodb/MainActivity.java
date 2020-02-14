@@ -1,18 +1,12 @@
 package com.example.ejemplodb;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.SQLException;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +14,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +26,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int id = 1;
-    TextView cajaHex;
+    TextView cajaHex;//se tiene que concatenar con el tipo de alarma
 
     private Statement st;
     private Connection con;
@@ -97,12 +89,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btnStart:
-                startService(new Intent(MainActivity.this, ejemplobatery.class));
+                new Intent(MainActivity.this, ejemplobatery.class);
                 break;
 
             case R.id.btnStop:
-                //stopService(new Intent(MainActivity.this, MyService.class));
-                startActivity(new Intent(this, Main2Activity.class));
+                new Intent(MainActivity.this, ejemplobatery.class);
+
                 break;
 
             default:
@@ -121,10 +113,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.conf) {
-
             startActivity(new Intent(this, Preferences.class));
-            //return true;
-
+            return true;
+        }
+        if (id == R.id.dinamicas) {
+            startActivity(new Intent(this, Main2Activity.class));
+            return true;
+        }
+        if (id == R.id.ejfragmentpref) {
+            startActivity(new Intent(this, SettingHeaderActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="test pref. frag" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:key="prefsUseLocalData"
+            android:summary="prueba de pref. frag,mas moderna"
+            android:title="fragments preference" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+</PreferenceScreen>
