@@ -3,10 +3,6 @@ package com.example.ejemplodb;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.view.View;
-
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceScreen;
 
 import java.util.List;
 
